@@ -5,6 +5,7 @@ let hasBlackJack = false;
 let hasNoChips = false;
 let cards = [];
 
+
 // Message, Cards, Sum, Player elements
 let messageEl = document.getElementById("messageEl");
 let cardsNum = document.getElementById('cardsNum');
