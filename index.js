@@ -12,6 +12,8 @@ let messageEl = document.getElementById("messageEl");
 let cardsNum = document.getElementById('cardsNum');
 let sumTotal = document.getElementById('sumTotal');
 let playerEl = document.getElementById('playerEl');
+let increaseBetBtn = document.getElementById('increaseBet');
+let decreaseBetBtn = document.getElementById('decreaseBet');
 let blackJackAmount = 0;
 let initialBetAmount = 20;
 let betAmount = initialBetAmount;
@@ -199,7 +201,7 @@ let drawCards = function (){
             message = "You're out of the game.";
             if(chipsAmount === 0){
                 messageEl.setAttribute('class', 'lostTxt');
-                message = createEmojiSpan() + " You LOST";
+                message = " You LOST";
                 betAmount = 0;
                 hasNoChips = true;
                 startFromZero = true;
@@ -226,6 +228,7 @@ let drawCards = function (){
         updatePlayerChips(intialChipsAmount);
     }
     messageEl.textContent = message;
+    addEmojiSpan(messageEl);
 }
 
 let removeDisabledAttr = function(){
@@ -233,8 +236,28 @@ let removeDisabledAttr = function(){
     if(btn.hasAttribute("disabled")){btn.removeAttribute("disabled");}
 }
 
-let createEmojiSpan = function () {
-    let emojiSpan = document.createElement("span");
-    emojiSpan.textContent = '😟';
-    return emojiSpan.outerHTML;
+let addEmojiSpan = function (messageEl) {
+    const messageContent = messageEl.textContent.toLowerCase();
+    const emojiSpan = document.createElement("span");
+    if(messageContent.includes("lost")){
+        emojiSpan.textContent = '😟';
+        messageEl.insertBefore(emojiSpan, messageEl.firstChild);
+    }
+}
+
+if(increaseBetBtn !== (undefined || null)){
+    betAmount = parseInt(betAmount) - parseInt(betAmount);
+    increaseBetBtn.addEventListener("click", function (e) {
+        betAmount = (parseInt(betAmount) == 0)? (parseInt(initialBetAmount) + parseInt(betAmount)) : (betAmount + 1);
+        betEl.textContent = "Bet: " + betAmount;
+        console.log(betAmount);
+    });
+}
+if(decreaseBetBtn !== (undefined || null)){
+    betAmount = parseInt(betAmount) - parseInt(betAmount);
+    decreaseBetBtn.addEventListener("click", function (e) {
+        betAmount = parseInt(betAmount) - parseInt(betAmount);
+        betEl.textContent = "Bet: " + betAmount;
+        console.log(betAmount);
+    });
 }
