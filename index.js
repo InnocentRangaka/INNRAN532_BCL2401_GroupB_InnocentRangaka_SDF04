@@ -57,18 +57,22 @@ let createStartBtn = function () {
         hasNoChips = false;
         
         startGameBtn.addEventListener("click", function (e) {
-            if(hasCashOut === true && hasBlackJack === false){
-                console.log("hasCashOut: " + startGameBtn.textContent + " | blackJackAmount: " + blackJackAmount);
-            }
-            if(hasBlackJack === false){
+            if(hasBlackJack === false && hasCashOut === false){
                 if(startFromZero){
                     cards = [];
                     cardsNum.textContent = "Cards: 0 0";
                     sumTotal.textContent = "Sum: 0";
                     startGame();
-                    // startFromZero = false;
                 }
                 else{startGame();}
+            }
+            if(hasCashOut && hasBlackJack){
+                // blackJackAmount = Math.floor(chipsAmount + winAmount);
+                updatePlayerChips(blackJackAmount);
+                hasBlackJack = false;
+                hasCashOut = false;
+                startGameBtn.removeAttribute("class");
+                startGameBtn.textContent = "START GAME";
             }
         });
 
@@ -87,6 +91,7 @@ let createRestartGameBtn = function () {
         sumTotal.after(restartBtn);
         restartGameBtn = restartBtn;
         hasNoChips = false;
+        messageEl.setAttribute('class', 'lostTxt');
         
         restartGameBtn.addEventListener("click", function (e) {
             if(startFromZero){
@@ -96,6 +101,7 @@ let createRestartGameBtn = function () {
                 drawCards();
             }
             else{drawCards();}
+            messageEl.removeAttribute('class', 'lostTxt;');
         });
 
         return restartGameBtn;
@@ -156,36 +162,34 @@ let drawCards = function (){
         
         cardsNum.textContent = "Cards: " + drawnCards;
         sumTotal.textContent = "Sum: " + total;
-        
-        blackJackAmount = Math.floor(chipsAmount + Math.floor(betAmount * 3));
+
+        let winAmount = Math.floor(betAmount * 3);
         
         if(total <= 20 && chipsAmount >= betAmount){
             message = "Do you want to draw a new card?";
-            // console.log("Try Again:" + ' ' + total + ' | ' + cards);
         }
         else if (total === 21) {
-            updatePlayerChips(blackJackAmount);
-        
+            blackJackAmount = Math.floor(chipsAmount + winAmount);
             message = "You've got Blackjack";
             hasBlackJack = true;
             newCardsBtn.replaceWith(createStartBtn());
 
             startGameBtn.setAttribute("disabled", true);
             
-            // console.log("Wooooowwwwww You Won!");
-            let countBy = blackJackAmount / 20;
+            let countBy = winAmount / 20;
+            countBy = (countBy <= 1)? 1 : countBy;
             let winningAmount = 0;
 
             let countAmount = function () {
-                if(winningAmount < blackJackAmount){
+                if(winningAmount < winAmount){
                     winningAmount++;
                     startGameBtn.textContent = "YOU WON " + winningAmount;
                     requestAnimationFrame(countAmount);
-                    if(winningAmount == blackJackAmount){
-                        startGameBtn.textContent = "CASHOUT " + blackJackAmount;
-                        // hasBlackJack = false;
-                        // startGameBtn.textContent = "START GAME";
-                        // removeDisabledAttr();
+                    if(winningAmount == winAmount){
+                        startGameBtn.setAttribute("class", "won");
+                        startGameBtn.textContent = "CASHOUT " + winAmount;
+                        hasCashOut = true;
+                        removeDisabledAttr();
                     }
                 }
             }
@@ -194,11 +198,12 @@ let drawCards = function (){
         else {
             message = "You're out of the game.";
             if(chipsAmount === 0){
+                messageEl.setAttribute('class', 'lostTxt');
+                message = createEmojiSpan() + " You LOST";
                 betAmount = 0;
                 hasNoChips = true;
                 startFromZero = true;
                 newCardsBtn.replaceWith(createRestartGameBtn());
-                console.log("You have R" + chipsAmount + " in Chips. | " + restartGameBtn.id);
             }
             else {
                 startFromZero = true;
@@ -211,23 +216,25 @@ let drawCards = function (){
         
     }
     else {
-        let makeBtn = document.createElement("button");
         restartGameBtn.replaceWith(createStartBtn());
         startGameBtn.textContent = "START GAME";
         removeDisabledAttr();
-        console.log("Game Over " + startGameBtn.id);
         startFromZero = false;
         hasNoChips = false;
         betEl.textContent = "Bet: 0";
         betAmount = initialBetAmount;
         updatePlayerChips(intialChipsAmount);
-        isRestarted = true;
     }
     messageEl.textContent = message;
-    // hasBlackJack = false;
 }
 
 let removeDisabledAttr = function(){
     const btn = document.querySelector('button');
     if(btn.hasAttribute("disabled")){btn.removeAttribute("disabled");}
+}
+
+let createEmojiSpan = function () {
+    let emojiSpan = document.createElement("span");
+    emojiSpan.textContent = '😟';
+    return emojiSpan.outerHTML;
 }

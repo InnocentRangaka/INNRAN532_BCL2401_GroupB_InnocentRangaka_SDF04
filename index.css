@@ -2,17 +2,10 @@
   --bg-color: #1F6B3A; /* Background Color: Deep green base color */
   --theme-color: goldenrod;
   --dark-theme-color: rgb(179, 128, 1);
+  --green-bg-image: url('./images/table.jpg');
+  --h1-size: 15vh;
+  --msg-size: calc(var(--h1-size) * 0.35);
 }
-html {
-  background-color: var(--bg-color);
-  background-image: url('./images/table.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 100vh;
-  overflow: none;
-}
-
-body {background-color: transparent;}
 
 html, body {
   margin: 0;
@@ -21,6 +14,21 @@ html, body {
   font-weight: bold;
   text-align: center;
   color: white;
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image: var(--green-bg-image);
+  background-size: cover;
+  background-position: center;
+}
+
+main {
+  padding: 2.5vw;
+}
+
+p {
+  font-size: calc(var(--h1-size) * 0.25);
 }
 
 #headerTxt {
@@ -37,32 +45,44 @@ html, body {
   position: absolute;
   top: -10px;
   right: 0;
-  font-size: small;
   text-align: right;
   margin-right: 15px;
 }
 
+#playerEl, #betEl {
+  font-size: medium;
+} 
+
 
 h1 {
   color: var(--theme-color);
+  font-size: var(--h1-size);
 }
 
 #messageEl {
   font-style: italic;
+  font-size: var(--msg-size);
 }
+#messageEl span {
+  font-style: normal;
+}
+.lostTxt {
+  color: red;
+}
+
 button {
   display: block;
-  width: 155px;
-  height: 50px;
+  width: calc(var(--h1-size) * 2.5);
+  height: calc(var(--h1-size) * 0.65);
   color: var(--bg-color);
-  /* font-weight: bold; */
+  font-size: calc(var(--h1-size) * 0.25);
+  font-weight: bolder;
   background-color: var(--theme-color);
   padding: 12px 25px;
   border: 2px solid transparent;
   border-radius: 5px;
   margin: 30px auto 15px;
   transition: all 0.3s ease-in-out;
-  font-weight: bolder;
 }
 button:hover {
   border: 2px solid var(--bg-color);
@@ -75,10 +95,11 @@ button:active {
 button:focus {
   background-color: var(--dark-theme-color);
 }
-button + button {
-  margin: 0px auto 25px;
+p + button {
+  margin: 13vh auto 0;
 }
 button.won {
-  font-size: larger;
+  font-size: calc(var(--h1-size) * 0.28);
+  font-weight: 900 !important;
   padding: 0;
 }
