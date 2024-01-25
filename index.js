@@ -1,30 +1,33 @@
-// javascript
+// Javascript code to handles various game states, including winning, losing, blackjacks, and betting options.
+
+// Track game state and player actions.
 let isRestarted = false;
 let startFromZero = false;
 let hasBlackJack = false;
 let hasCashOut = false;
 let hasNoChips = false;
-let cards = [];
+let cards = []; // Stores the player's current cards.
 
 
-// Message, Cards, Sum, Player elements
-let messageEl = document.getElementById("messageEl");
-let cardsNum = document.getElementById('cardsNum');
-let sumTotal = document.getElementById('sumTotal');
-let playerEl = document.getElementById('playerEl');
+// Message, Cards, Sum, Player elements, initial amounts
+let messageEl = document.getElementById("messageEl"); // Displays messages to the player.
+let cardsNum = document.getElementById('cardsNum'); // Shows the player's current cards.
+let sumTotal = document.getElementById('sumTotal'); // Displays the sum of the player's cards.
+let playerEl = document.getElementById('playerEl'); // Shows the player's name and chips.
 let increaseBetBtn = document.getElementById('increaseBet');
 let decreaseBetBtn = document.getElementById('decreaseBet');
-let blackJackAmount = 0;
-let initialBetAmount = 20;
-let betAmount = initialBetAmount;
-let intialChipsAmount = 100;
+let blackJackAmount = 0; // Stores the winning amount for a blackjack.
+let initialBetAmount = 20; // Start the player's bet.
+let betAmount = initialBetAmount; // Stores the bet amount
+let intialChipsAmount = 100; // Stores the player's initial chips value.
 
-
+// Player object containing player information (name and chips).
 let player = {
     name: "Player 1",
     chips: intialChipsAmount
 }
 
+// Updates the player's chip count and displays it on the screen.
 function updatePlayerChips(amount=0){
     player.chips = amount;
     playerEl.textContent = player.name + ": R" + player.chips;
@@ -33,6 +36,7 @@ function updatePlayerChips(amount=0){
 updatePlayerChips(player.chips);
 
 // Random Numbers Array | Generate random numbers between 1 and 13
+// Adjusts card values to match blackjack rules (aces are 11, face cards are 10).
 let randomNumberArr = function () {
     let count = cards.length;
     let number = Math.floor(Math.random() * 13) + 1;
@@ -46,11 +50,12 @@ let randomNumberArr = function () {
     return cards;
 };
 
-// Start Game and New Cards Buttons
+/** Create and manage the game buttons to control game actions **/
+// Main button to start the game
 let startGameBtn = document.getElementById("startGameBtn");
 
 let createStartBtn = function () {
-    if(startGameBtn === (undefined || null)){
+    if(startGameBtn === (undefined || null)){ // Check if button exists
         let gameStartBtn = document.createElement("button");
         gameStartBtn.id = "gameStartBtn";
         gameStartBtn.textContent = "START GAME";
@@ -69,7 +74,6 @@ let createStartBtn = function () {
                 else{startGame();}
             }
             if(hasCashOut && hasBlackJack){
-                // blackJackAmount = Math.floor(chipsAmount + winAmount);
                 updatePlayerChips(blackJackAmount);
                 hasBlackJack = false;
                 hasCashOut = false;
@@ -84,9 +88,10 @@ let createStartBtn = function () {
 }
 createStartBtn();
 
+// Restart button to restart the game
 let restartGameBtn = document.getElementById("restartGameBtn");
 let createRestartGameBtn = function () {
-    if(restartGameBtn === (undefined || null)){
+    if(restartGameBtn === (undefined || null)){ // Check if button exists
         let restartBtn = document.createElement("button");
         restartBtn.id = "restartGameBtn";
         restartBtn.textContent = "RESTART";
@@ -111,9 +116,10 @@ let createRestartGameBtn = function () {
     else {return restartGameBtn;}
 }
 
+// Button to draw a new card
 let newCardsBtn = document.getElementById("newCardsBtn");
 let createNewCardsBtn = function () {
-    if(newCardsBtn === (undefined || null)){
+    if(newCardsBtn === (undefined || null)){ // Check if button exists
         let drawCardsBtn = document.createElement("button");
         drawCardsBtn.id = "newCardsBtn";
         drawCardsBtn.textContent = "NEW CARD";
@@ -129,22 +135,19 @@ let createNewCardsBtn = function () {
     else{return newCardsBtn;}
 }
 
-// START GAME BUTTON AND FUNCTIONS
-// Check if Start Button exists. If it exist, return Button Typeof
-// Create a Start Game Button if the Start Game Button does not exist
+/** Game functions **/
 
-
+// Initializes a new game, handling bets and chip updates.
 let startGame = function (){
     let remainingChips = player.chips - betAmount;
     updatePlayerChips(remainingChips);
-    betEl.textContent = "Bet: " + betAmount;
+    betEl.textContent = "Bet: R" + betAmount;
     createNewCardsBtn();
     startGameBtn.replaceWith(createNewCardsBtn());
     drawCards();
 }
 
-// startGame();
-
+// Draws new cards, calculates scores, and displays game state.
 let drawCards = function (){
     randomNumberArr(); // Generate random number and initiate cards array
     let chipsAmount = parseInt(player.chips);
@@ -167,7 +170,7 @@ let drawCards = function (){
 
         let winAmount = Math.floor(betAmount * 3);
         
-        if(total <= 20 && chipsAmount >= betAmount){
+        if(total <= 20){
             message = "Do you want to draw a new card?";
         }
         else if (total === 21) {
@@ -218,12 +221,13 @@ let drawCards = function (){
         
     }
     else {
-        restartGameBtn.replaceWith(createStartBtn());
+        let makeButton = (document.querySelector('button').id == 'newCardsBtn')? newCardsBtn : restartGameBtn;
+        makeButton.replaceWith(createStartBtn());
         startGameBtn.textContent = "START GAME";
         removeDisabledAttr();
         startFromZero = false;
         hasNoChips = false;
-        betEl.textContent = "Bet: 0";
+        betEl.textContent = "Bet: R0";
         betAmount = initialBetAmount;
         updatePlayerChips(intialChipsAmount);
     }
@@ -231,11 +235,13 @@ let drawCards = function (){
     addEmojiSpan(messageEl);
 }
 
+// Removes the disabled attribute from a button.
 let removeDisabledAttr = function(){
     const btn = document.querySelector('button');
     if(btn.hasAttribute("disabled")){btn.removeAttribute("disabled");}
 }
 
+// Adds an emoji to the message element if the message contains "lost".
 let addEmojiSpan = function (messageEl) {
     const messageContent = messageEl.textContent.toLowerCase();
     const emojiSpan = document.createElement("span");
@@ -245,19 +251,22 @@ let addEmojiSpan = function (messageEl) {
     }
 }
 
+// Buttons to adjust the bet amount.
 if(increaseBetBtn !== (undefined || null)){
     betAmount = parseInt(betAmount) - parseInt(betAmount);
     increaseBetBtn.addEventListener("click", function (e) {
-        betAmount = (parseInt(betAmount) == 0)? (parseInt(initialBetAmount) + parseInt(betAmount)) : (betAmount + 1);
-        betEl.textContent = "Bet: " + betAmount;
-        console.log(betAmount);
+        if(parseInt(betAmount) < parseInt(player.chips)){
+            betAmount = (parseInt(betAmount) == 0)? (parseInt(initialBetAmount) + parseInt(betAmount)) : (betAmount + 10);
+            betEl.textContent = "Bet: R" + betAmount;
+        }
     });
 }
 if(decreaseBetBtn !== (undefined || null)){
     betAmount = parseInt(betAmount) - parseInt(betAmount);
     decreaseBetBtn.addEventListener("click", function (e) {
-        betAmount = parseInt(betAmount) - parseInt(betAmount);
-        betEl.textContent = "Bet: " + betAmount;
-        console.log(betAmount);
+        if(parseInt(betAmount) > initialBetAmount){
+            betAmount = (parseInt(betAmount) == 0)? (parseInt(betAmount) - parseInt(initialBetAmount)) : (betAmount - 10);
+            betEl.textContent = "Bet: R" + betAmount;
+        }
     });
 }
