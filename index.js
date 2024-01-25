@@ -2,6 +2,7 @@
 let isRestarted = false;
 let startFromZero = false;
 let hasBlackJack = false;
+let hasCashOut = false;
 let hasNoChips = false;
 let cards = [];
 
@@ -11,13 +12,14 @@ let messageEl = document.getElementById("messageEl");
 let cardsNum = document.getElementById('cardsNum');
 let sumTotal = document.getElementById('sumTotal');
 let playerEl = document.getElementById('playerEl');
+let blackJackAmount = 0;
 let initialBetAmount = 20;
 let betAmount = initialBetAmount;
 let intialChipsAmount = 100;
 
 
 let player = {
-    name: "Per",
+    name: "Player 1",
     chips: intialChipsAmount
 }
 
@@ -55,14 +57,19 @@ let createStartBtn = function () {
         hasNoChips = false;
         
         startGameBtn.addEventListener("click", function (e) {
-            if(startFromZero){
-                cards = [];
-                cardsNum.textContent = "Cards: 0 0";
-                sumTotal.textContent = "Sum: 0";
-                startGame();
-                // startFromZero = false;
+            if(hasCashOut === true && hasBlackJack === false){
+                console.log("hasCashOut: " + startGameBtn.textContent + " | blackJackAmount: " + blackJackAmount);
             }
-            else{startGame();}
+            if(hasBlackJack === false){
+                if(startFromZero){
+                    cards = [];
+                    cardsNum.textContent = "Cards: 0 0";
+                    sumTotal.textContent = "Sum: 0";
+                    startGame();
+                    // startFromZero = false;
+                }
+                else{startGame();}
+            }
         });
 
         return startGameBtn;
@@ -76,7 +83,7 @@ let createRestartGameBtn = function () {
     if(restartGameBtn === (undefined || null)){
         let restartBtn = document.createElement("button");
         restartBtn.id = "restartGameBtn";
-        restartBtn.textContent = "RESTART GAME";
+        restartBtn.textContent = "RESTART";
         sumTotal.after(restartBtn);
         restartGameBtn = restartBtn;
         hasNoChips = false;
@@ -86,9 +93,6 @@ let createRestartGameBtn = function () {
                 cards = [];
                 cardsNum.textContent = "Cards: 0 0";
                 sumTotal.textContent = "Sum: 0";
-                // startGame();
-                // startFromZero = false;
-                console.log(restartGameBtn.id);
                 drawCards();
             }
             else{drawCards();}
@@ -147,17 +151,16 @@ let drawCards = function (){
     let message = "Want to play a round?";
     
     if(betAmount >= 20){
-        // console.log(drawnCards + ' | ' + total);
         let num1 = cards[0];
         let num2 = cards[1];
-        // let total = Math.floor(num1 + num2);
+        
         cardsNum.textContent = "Cards: " + drawnCards;
         sumTotal.textContent = "Sum: " + total;
         
-        let blackJackAmount = Math.floor(chipsAmount + Math.floor(betAmount * 3));
+        blackJackAmount = Math.floor(chipsAmount + Math.floor(betAmount * 3));
         
         if(total <= 20 && chipsAmount >= betAmount){
-            message = "Do you want to draw a new card?"
+            message = "Do you want to draw a new card?";
             // console.log("Try Again:" + ' ' + total + ' | ' + cards);
         }
         else if (total === 21) {
@@ -166,10 +169,30 @@ let drawCards = function (){
             message = "You've got Blackjack";
             hasBlackJack = true;
             newCardsBtn.replaceWith(createStartBtn());
-            startGameBtn.textContent = "START GAME";
+
+            startGameBtn.setAttribute("disabled", true);
+            
             // console.log("Wooooowwwwww You Won!");
+            let countBy = blackJackAmount / 20;
+            let winningAmount = 0;
+
+            let countAmount = function () {
+                if(winningAmount < blackJackAmount){
+                    winningAmount++;
+                    startGameBtn.textContent = "YOU WON " + winningAmount;
+                    requestAnimationFrame(countAmount);
+                    if(winningAmount == blackJackAmount){
+                        startGameBtn.textContent = "CASHOUT " + blackJackAmount;
+                        // hasBlackJack = false;
+                        // startGameBtn.textContent = "START GAME";
+                        // removeDisabledAttr();
+                    }
+                }
+            }
+            countAmount();
         }
         else {
+            message = "You're out of the game.";
             if(chipsAmount === 0){
                 betAmount = 0;
                 hasNoChips = true;
@@ -178,12 +201,11 @@ let drawCards = function (){
                 console.log("You have R" + chipsAmount + " in Chips. | " + restartGameBtn.id);
             }
             else {
-                message = "You're out of the game."
                 startFromZero = true;
                 newCardsBtn.replaceWith(createStartBtn());
-                startGameBtn.textContent = "CONTINUE";
+                startGameBtn.textContent = "BET AGAIN";
+                removeDisabledAttr();
                 hasNoChips = false;
-                console.log("ChipsAmount: " + chipsAmount + " | " + betAmount);
             }
         }
         
@@ -192,6 +214,7 @@ let drawCards = function (){
         let makeBtn = document.createElement("button");
         restartGameBtn.replaceWith(createStartBtn());
         startGameBtn.textContent = "START GAME";
+        removeDisabledAttr();
         console.log("Game Over " + startGameBtn.id);
         startFromZero = false;
         hasNoChips = false;
@@ -201,6 +224,10 @@ let drawCards = function (){
         isRestarted = true;
     }
     messageEl.textContent = message;
-    hasBlackJack = false;
+    // hasBlackJack = false;
 }
 
+let removeDisabledAttr = function(){
+    const btn = document.querySelector('button');
+    if(btn.hasAttribute("disabled")){btn.removeAttribute("disabled");}
+}

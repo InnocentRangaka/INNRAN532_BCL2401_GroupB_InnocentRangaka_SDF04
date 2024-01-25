@@ -1,49 +1,84 @@
+:root {
+  --bg-color: #1F6B3A; /* Background Color: Deep green base color */
+  --theme-color: goldenrod;
+  --dark-theme-color: rgb(179, 128, 1);
+}
 html {
-    background-color: #1F6B3A; /* Deep green base color */
-    background-image: url('images/table.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    overflow: none;
+  background-color: var(--bg-color);
+  background-image: url('./images/table.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  overflow: none;
 }
 
 body {background-color: transparent;}
 
 html, body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-weight: bold;
-    text-align: center;
-    color: white;
+  margin: 0;
+  padding: 0;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+
+#headerTxt {
+  position: relative;
+  height: 20px;
+}
+
+#playerEl {
+  text-align: left;
+  margin-left: 15px;
 }
 
 #betEl {
-    font-size: small;
-    text-align: right;
-    margin-right: 15px;
+  position: absolute;
+  top: -10px;
+  right: 0;
+  font-size: small;
+  text-align: right;
+  margin-right: 15px;
 }
 
 
 h1 {
-    color: goldenrod;
+  color: var(--theme-color);
 }
 
 #messageEl {
-    font-style: italic;
+  font-style: italic;
 }
 button {
-    display: block;
-    width: 155px;
-    height: 50px;
-    color: #1F6B3A;
-    font-weight: bold;
-    background-color: goldenrod;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    margin: 30px auto 15px;
+  display: block;
+  width: 155px;
+  height: 50px;
+  color: var(--bg-color);
+  /* font-weight: bold; */
+  background-color: var(--theme-color);
+  padding: 12px 25px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  margin: 30px auto 15px;
+  transition: all 0.3s ease-in-out;
+  font-weight: bolder;
+}
+button:hover {
+  border: 2px solid var(--bg-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+}
+button:active {
+  transform: scale(1.1);
+  border: 2px solid var(--theme-color);
+}
+button:focus {
+  background-color: var(--dark-theme-color);
 }
 button + button {
-    margin: 0px auto 25px;
+  margin: 0px auto 25px;
+}
+button.won {
+  font-size: larger;
+  padding: 0;
 }
