@@ -1,5 +1,3 @@
-#Game Name: 
-
 #Game Name:
 Blackjack Game
 
