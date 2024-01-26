@@ -54,6 +54,8 @@ p {
 
 /* Displays player information. */
 #playerEl {
+  position: absolute;
+  top: -1.75vh;
   text-align: left;
   margin-left: 15px;
 }
@@ -61,7 +63,7 @@ p {
 /* Buttons to adjust the bet. */
 #increaseBet, #decreaseBet{
   position: absolute;
-  top: -1px;
+  top: .45vh;
   width: 20px;
   height: 20px;
   text-align: center;
@@ -108,14 +110,14 @@ p {
 /* Displays the current bet amount. */
 #betEl {
   position: absolute;
-  top: -15px;
+  top: -1.75vh;
   right: 0;
   text-align: right;
   margin-right: 15px;
 }
 
 #playerEl, #betEl {
-  font-size: medium;
+  font-size: calc(var(--h1-size) * 0.25);
 }
 
 

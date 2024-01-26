@@ -135,7 +135,12 @@ let createNewCardsBtn = function () {
     else{return newCardsBtn;}
 }
 
-/** Game functions **/
+/** Game functions 
+ * * The below function were a bit difficult to run the at first attempt.
+ * * Calculating amounts, changing buttons, and state of the game based on the
+ * * total sum of all drawn cards, was challenging and I had to add variables to
+ * * solve all difficulties.
+ **/
 
 // Initializes a new game, handling bets and chip updates.
 let startGame = function (){
@@ -170,7 +175,7 @@ let drawCards = function (){
 
         let winAmount = Math.floor(betAmount * 3);
         
-        if(total <= 20){
+        if(total <= 20){ // Only a message here, no other activity
             message = "Do you want to draw a new card?";
         }
         else if (total === 21) {
